@@ -6,6 +6,7 @@ if (document.location.hash) {
         alert("URL fragment (#) contains invalid JS code, try again!");
     }
 } else {
+    function sendRecursiveRequest() {
     fetch("/xss-two-flag")
         .then(function(response) {
             if (!response.ok) {
@@ -19,5 +20,10 @@ if (document.location.hash) {
         })
         .catch(function(error) {
             console.error("Fetch error:", error);
+            // If there's an error, recursively call the function again
+            sendRecursiveRequest();
         });
 }
+
+// Call the function initially to start the recursive requests
+sendRecursiveRequest();
